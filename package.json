@@ -1,0 +1,36 @@
+{
+  "name": "guild_wars_2_graphql_server",
+  "version": "1.0.0",
+  "description": "A simple Guild Wars 2 Server using GraphQL for CRUD functionality and navigation of the Official Guild Wars 2 API (V2)",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emwykyu/Guild_Wars_2_GraphQL_Server.git"
+  },
+  "keywords": [
+    "Guild Wars 2",
+    "GraphQL",
+    "Apollo",
+    "NodeJS",
+    "Express",
+    "Server",
+    "CRUD",
+    "API"
+  ],
+  "author": "Yasin Qasim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emwykyu/Guild_Wars_2_GraphQL_Server/issues"
+  },
+  "homepage": "https://github.com/emwykyu/Guild_Wars_2_GraphQL_Server#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^15.0.0",
+    "nodemon": "^2.0.4"
+  }
+}
