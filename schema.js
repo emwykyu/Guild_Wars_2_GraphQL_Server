@@ -24,22 +24,39 @@ const AccountType = new GraphQLObjectType({
         age: {type: GraphQLInt},
         world: {type: GraphQLInt},
         created: {type: GraphQLString},
-        guilds: {type: GraphQLList(GraphQLString)}
+        guilds: {
+            type: GraphQLList(GuildType),
+            args: {
+                id: { type: GraphQLID }
+              },
+            resolve(parent, args){
+                const guildIds = parent.guilds
+                return Promise.all(guildIds.map(id => {
+                    console.log(id)
+                    return axios.get(`https://api.guildwars2.com/v2/guild/${id}?access_token=${apiKey}`)
+                    .then(res => res.data);
+                  }));
+            }
+        }
     })
 });
 
-// const GuildsType = new GraphQLObjectType({
-//     name: 'guilds',
-//     fields: () => ({
-//         name: {type: GraphQLString}
-//     }),
-//     args: id()
-//     resolve(parentValue, args){
-//         console.log(parent);
-//         // return axios.get(`http://api.guildwars2.com/v2/account?access_token=${apiKey}`)
-//         // .then((res) => res.data);
-//     }
-// });
+
+const GuildType = new GraphQLObjectType({
+    name: 'guild',
+    fields: () => ({
+        name: {type: GraphQLString},
+        motd: {type: GraphQLString},
+        member_count: {type: GraphQLInt},
+        member_capacity: {type: GraphQLInt}
+    })
+});
+
+
+/**
+ * inside each loop we want an axios get() call. this is called on each item of the loop
+ */
+  //if a separate query is able to return just the list of id's for Guilds, then we can have another 
 
 
 //======================= ROOT QUERY ==============================
