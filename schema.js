@@ -46,6 +46,8 @@ const GuildType = new GraphQLObjectType({
     name: 'guild',
     fields: () => ({
         name: {type: GraphQLString},
+        tag: {type: GraphQLString},
+        level: {type: GraphQLInt},
         motd: {type: GraphQLString},
         member_count: {type: GraphQLInt},
         member_capacity: {type: GraphQLInt}
