@@ -22,7 +22,18 @@ const AccountType = new GraphQLObjectType({
         id: {type: GraphQLID},
         name: {type: GraphQLString},
         age: {type: GraphQLInt},
-        world: {type: GraphQLInt},
+        world: {
+            type: GraphQLList(WorldType),
+            args: {
+                id: { type: GraphQLID }
+            },
+            resolve(parent, args){
+                const guildIds = parent.world
+                return axios.get(`https://api.guildwars2.com/v2/worlds?ids=${guildIds}`)
+                    .then(res => res.data);               
+            }
+        
+        },
         created: {type: GraphQLString},
         guilds: {
             type: GraphQLList(GuildType),
@@ -32,12 +43,25 @@ const AccountType = new GraphQLObjectType({
             resolve(parent, args){
                 const guildIds = parent.guilds
                 return Promise.all(guildIds.map(id => {
-                    console.log(id)
+                    //console.log(id)
                     return axios.get(`https://api.guildwars2.com/v2/guild/${id}?access_token=${apiKey}`)
                     .then(res => res.data);
                   }));
             }
-        }
+        },
+        fractal_level: {type: GraphQLInt},
+        daily_ap: {type: GraphQLInt},
+        monthly_ap: {type: GraphQLInt},
+        wvw_rank: {type: GraphQLInt},
+        access: {type: GraphQLList(GraphQLString)}
+    })
+});
+
+const WorldType = new GraphQLObjectType({
+    name: 'world',
+    fields: () => ({
+        name: {type: GraphQLString},
+        population: {type: GraphQLString}
     })
 });
 
