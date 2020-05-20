@@ -12,6 +12,7 @@ const {
 
 //API Key
 const apiKey = `0293A66B-3247-7F48-AA38-CD2C144ED1746A75F783-572B-45E8-BD99-8497880A3CF2`;
+const api = `https://api.guildwars2.com/v2`;
 
 //======================= TYPES ==============================
 
@@ -29,7 +30,7 @@ const AccountType = new GraphQLObjectType({
             },
             resolve(parent, args){
                 const guildIds = parent.world
-                return axios.get(`https://api.guildwars2.com/v2/worlds?ids=${guildIds}`)
+                return axios.get(`${api}/worlds?ids=${guildIds}`)
                     .then(res => res.data);               
             }
         
@@ -44,7 +45,7 @@ const AccountType = new GraphQLObjectType({
                 const guildIds = parent.guilds
                 return Promise.all(guildIds.map(id => {
                     //console.log(id)
-                    return axios.get(`https://api.guildwars2.com/v2/guild/${id}?access_token=${apiKey}`)
+                    return axios.get(`${api}/guild/${id}?access_token=${apiKey}`)
                     .then(res => res.data);
                   }));
             }
@@ -57,6 +58,7 @@ const AccountType = new GraphQLObjectType({
     })
 });
 
+//world type
 const WorldType = new GraphQLObjectType({
     name: 'world',
     fields: () => ({
@@ -65,7 +67,7 @@ const WorldType = new GraphQLObjectType({
     })
 });
 
-
+//guild type
 const GuildType = new GraphQLObjectType({
     name: 'guild',
     fields: () => ({
@@ -78,12 +80,21 @@ const GuildType = new GraphQLObjectType({
     })
 });
 
-
-/**
- * inside each loop we want an axios get() call. this is called on each item of the loop
- */
-  //if a separate query is able to return just the list of id's for Guilds, then we can have another 
-
+//character type
+const CharacterType = new GraphQLObjectType({
+    name: 'character',
+    fields: () => ({
+        name: {type: GraphQLString},
+        race: {type: GraphQLString},
+        gender: {type: GraphQLString},
+        profession: {type: GraphQLString},
+        level: {type: GraphQLInt},
+        created: {type: GraphQLString},
+        deaths: {type: GraphQLInt},
+        title: {type: GraphQLID},
+        backstory: {type: GraphQLList(GraphQLString)},
+    })
+});
 
 //======================= ROOT QUERY ==============================
 const rootQuery = new GraphQLObjectType({
@@ -92,8 +103,15 @@ const rootQuery = new GraphQLObjectType({
         accountDetails: {
             type: AccountType,
             resolve(parentValue, args){
-                return axios.get(`https://api.guildwars2.com/v2/account?access_token=${apiKey}`)
+                return axios.get(`${api}/account?access_token=${apiKey}`)
                 .then((res) => res.data);
+            }
+        },
+        characters: {
+            type: GraphQLList(CharacterType),
+            resolve(parentValue, args){
+                return axios.get(`${api}/characters?ids=all&access_token=${apiKey}`)
+                .then((res) => res.data)
             }
         }
     }
